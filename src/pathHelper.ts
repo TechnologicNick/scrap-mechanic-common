@@ -1,8 +1,7 @@
-import { dialog } from "electron";
+import { Dialog } from "electron";
 import regedit from "regedit";
 import path from "path";
 import fs from "fs";
-import { assert } from "node:console";
 
 const NO_INSTALL_DIR_MESSAGE = "PathHelper.INSTALLATION_DIR not initialised. Initialise it using PathHelper.findSMInstallDir() or PathHelper.findOrSelectSMInstallDir().";
 const NO_USER_DIR_MESSAGE = "PathHelper.USER_DIR not initialised. Initialise it using PathHelper.findUserDir()";
@@ -172,7 +171,7 @@ export default class PathHelper {
 
 
     static updatePaths(): void {
-        assert(this.INSTALLATION_DIR, NO_INSTALL_DIR_MESSAGE);
+        if (!this.INSTALLATION_DIR) throw NO_INSTALL_DIR_MESSAGE;
 
         this.GAME_DATA = path.join(<string>this.INSTALLATION_DIR, "Data");
         this.SURVIVAL_DATA = path.join(<string>this.INSTALLATION_DIR, "Survival");
@@ -180,7 +179,7 @@ export default class PathHelper {
     }
 
     static expandPathPlaceholders(p: string): string {
-        assert(this.INSTALLATION_DIR, NO_INSTALL_DIR_MESSAGE);
+        if (!this.INSTALLATION_DIR) throw NO_INSTALL_DIR_MESSAGE;
 
         return p.replace("$GAME_DATA", <string>this.GAME_DATA)
                 .replace("$SURVIVAL_DATA", <string>this.SURVIVAL_DATA)

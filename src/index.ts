@@ -1,3 +1,3 @@
-export * from "./pathHelper";
+export { default as PathHelper } from "./pathHelper";
 export * from "./workshopMod";
-export * from "./workshopModManager";
+export { default as WorkshopModManager } from "./workshopModManager";
