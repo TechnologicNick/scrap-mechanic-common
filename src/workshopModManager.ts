@@ -1,38 +1,40 @@
-const fs = require("fs");
-const path = require("path");
-const stripJsonComments = require("strip-json-comments");
-const WorkshopMod = require("./workshopMod");
-const PathHelper = require("./pathHelper.js");
+import path from "path";
+import fs from "fs";
+import stripJsonComments from "strip-json-comments";
+import PathHelper from "./pathHelper";
+import { WorkshopMod } from "./workshopMod";
 
-class WorkshopModManager {
-    static mods = {};
+export default class WorkshopModManager {
+    static mods: {
+        [localId: string]: WorkshopMod;
+    } = {};
     
-    static getModsDirectories() {
+    static getModsDirectories(): (string | undefined)[] {
         return [
             PathHelper.USER_MODS_DIR,
             PathHelper.WORKSHOP_DIR
         ]
     }
 
-    static reloadMods() {
+    static reloadMods(): { modCount: number, shapeCount: number } {
         this.mods = {};
 
         let modsVanilla = [
-            new WorkshopMod(PathHelper.GAME_DATA, {
+            new WorkshopMod(<string>PathHelper.GAME_DATA, {
                 description: "All blocks, parts and joints from vanilla creative mode",
                 localId: "creative",
                 name: "Vanilla - Creative mode",
                 type: "Blocks and Parts",
                 version: 0
             }, true),
-            new WorkshopMod(PathHelper.SURVIVAL_DATA, {
+            new WorkshopMod(<string>PathHelper.SURVIVAL_DATA, {
                 description: "All blocks, parts and joints from vanilla survival mode",
                 localId: "survival",
                 name: "Vanilla - Survival mode",
                 type: "Blocks and Parts",
                 version: 0
             }, true),
-            new WorkshopMod(PathHelper.CHALLENGE_DATA, {
+            new WorkshopMod(<string>PathHelper.CHALLENGE_DATA, {
                 description: "All blocks, parts and joints from vanilla challenge mode",
                 localId: "challenge",
                 name: "Vanilla - Challenge mode",
@@ -40,6 +42,7 @@ class WorkshopModManager {
                 version: 0
             }, true)
         ];
+
         for(let mod of modsVanilla) {
             try {
                 mod.parseShapesets();
@@ -52,12 +55,12 @@ class WorkshopModManager {
         }
 
         for (let modsDir of this.getModsDirectories()) {
-            if (!fs.existsSync(modsDir)) {
+            if (!modsDir || !fs.existsSync(modsDir)) {
                 console.warn(`Mod directory "${modsDir}" does not exist!`);
                 continue;
             }
 
-            for (let dir of fs.readdirSync(modsDir).filter(f => fs.statSync(path.join(modsDir, f)).isDirectory())) {
+            for (let dir of fs.readdirSync(modsDir).filter(f => fs.statSync(path.join(<string>modsDir, f)).isDirectory())) {
                 let pathDesc = path.join(modsDir, dir, "description.json");
                 
                 if (!fs.existsSync(pathDesc)) continue;
@@ -86,14 +89,14 @@ class WorkshopModManager {
         let shapeCount = 0;
         for (let mod of Object.values(this.mods)) shapeCount += Object.keys(mod.shapes).length;
         console.log(`Loaded ${modCount} mods with ${shapeCount} shapes`);
-        return {modCount: modCount, shapeCount: shapeCount};
+        return { modCount: modCount, shapeCount: shapeCount };
     }
 
-    static getModsWithShapeUuid(uuid) {
+    static getModsWithShapeUuid(uuid: string): WorkshopMod[] {
         return Object.values(this.mods).filter((mod) => mod.shapes[uuid]);
     }
 
-    static expandPathPlaceholders(p) {
+    static expandPathPlaceholders(p: string): string {
         let matches = Array.from(p.matchAll(/\$CONTENT_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/g));
 
         for (let m of matches) {
@@ -106,5 +109,3 @@ class WorkshopModManager {
         return PathHelper.expandPathPlaceholders(p);
     }
 }
-
-module.exports = WorkshopModManager;

@@ -1,11 +1,37 @@
-const fs = require("fs");
-const path = require("path");
-const stripJsonComments = require("strip-json-comments");
-const PathHelper = require("./pathHelper.js");
-let WorkshopModManager; // Circular dependency bypass
+import path from "path";
+import fs from "fs";
+import stripJsonComments from "strip-json-comments";
+import PathHelper from "./pathHelper";
+import WorkshopModManager from "./workshopModManager";
 
-class WorkshopMod {
-    constructor(dir, description, isFake = false) {
+export interface Shape {
+    type: "block" | "part" | "joint";
+    uuid: string;
+    modLocalId: string;
+    definition: Object;
+}
+
+export interface Description {
+    creatorId?: number;
+    description: string;
+    fileId?: number | undefined;
+    localId: string;
+    name: string;
+    type: "Blocks and Parts" | string,
+    version: number;
+
+    [key: string]: any;
+}
+
+export class WorkshopMod {
+    dir: string;
+    description: Description;
+    isFake: boolean;
+    shapes: {
+        [uuid: string]: Shape;
+    }
+
+    constructor(dir: string, description: Description, isFake: boolean = false) {
         this.dir = dir;
         this.description = description || JSON.parse(stripJsonComments(fs.readFileSync(path.join(this.dir, "description.json")).toString()));
         this.isFake = isFake;
@@ -14,7 +40,7 @@ class WorkshopMod {
         if (this.description.type !== "Blocks and Parts") throw new Error(`This is not a mod! type = ${this.description.type}`);
     }
 
-    parseShapesets(shapesetsDir) {
+    parseShapesets(shapesetsDir?: string): void {
         shapesetsDir ??= path.join(this.dir, "Objects", "Database", "ShapeSets");
 
         if (!fs.existsSync(shapesetsDir)) throw new Error(`ShapeSets directory doesn't exist! (${shapesetsDir})`);
@@ -58,14 +84,10 @@ class WorkshopMod {
         }
     }
 
-    expandPathPlaceholders(p) {
+    expandPathPlaceholders(p: string): string {
         p = p.replace("$MOD_DATA", this.dir);
-
-        WorkshopModManager ??= require("./workshopModManager.js"); // Circular dependency bypass
 
         return WorkshopModManager.expandPathPlaceholders(p);
     }
 
 }
-
-module.exports = WorkshopMod;

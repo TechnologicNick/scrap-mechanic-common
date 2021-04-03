@@ -5,7 +5,9 @@
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "declaration": true,
+        "noImplicitAny": false
     },
     "include": [
         "src"
