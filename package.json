@@ -2,10 +2,15 @@
   "name": "scrap-mechanic-common",
   "version": "1.0.0",
   "description": "Things commonly used when working with Scrap Mechanic",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "TechnologicNick",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  }
 }
