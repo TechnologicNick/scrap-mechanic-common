@@ -1,67 +1,11 @@
 {
-  "name": "blueprint-viewer",
-  "productName": "blueprint-viewer",
+  "name": "scrap-mechanic-common",
   "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": "src/main.js",
+  "description": "Things commonly used when working with Scrap Mechanic",
+  "main": "index.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
-    "css-build": "node-sass src/sass -o src/renderer/css",
-    "css-watch": "npm run css-build -- --watch"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": {
-    "name": "TechnologicNick",
-    "email": "technologicnick@gmail.com"
-  },
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "blueprint_viewer"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  },
-  "dependencies": {
-    "electron-reload": "^1.5.0",
-    "electron-squirrel-startup": "^1.0.0",
-    "regedit": "^3.0.3",
-    "stats.js": "^0.17.0",
-    "strip-json-comments": "^3.1.1",
-    "three": "^0.123.0"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "bulma": "^0.9.1",
-    "electron": "11.0.4",
-    "node-sass": "^5.0.0"
-  }
+  "author": "TechnologicNick",
+  "license": "MIT"
 }
