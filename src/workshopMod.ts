@@ -30,11 +30,15 @@ export class WorkshopMod {
     shapes: {
         [uuid: string]: Shape;
     }
+    preview: string;
 
-    constructor(dir: string, description: Description, isFake: boolean = false) {
+    constructor(dir: string, description: Description, isFake: boolean = false, preview?: string) {
         this.dir = dir;
         this.description = description || JSON.parse(stripJsonComments(fs.readFileSync(path.join(this.dir, "description.json")).toString()));
         this.isFake = isFake;
+        this.preview = preview
+            ?? ["png", "jpg", "gif"].find(ext => fs.existsSync(path.join(this.dir, `preview.${ext}`)))
+            ?? PathHelper.expandPathPlaceholders("$GAME_DATA/ExampleMods/Blocks and Parts/preview.jpg");
         this.shapes = {};
 
         if (this.description.type !== "Blocks and Parts") throw new Error(`This is not a mod! type = ${this.description.type}`);
