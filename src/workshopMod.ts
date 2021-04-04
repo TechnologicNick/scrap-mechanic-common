@@ -40,7 +40,7 @@ export class WorkshopMod {
         if (this.description.type !== "Blocks and Parts") throw new Error(`This is not a mod! type = ${this.description.type}`);
     }
 
-    parseShapesets(shapesetsDir?: string): void {
+    parseShapesets(shapesetsDir?: string): number {
         shapesetsDir ??= path.join(this.dir, "Objects", "Database", "ShapeSets");
 
         if (!fs.existsSync(shapesetsDir)) throw new Error(`ShapeSets directory doesn't exist! (${shapesetsDir})`);
@@ -82,6 +82,8 @@ export class WorkshopMod {
                 }
             }
         }
+
+        return Object.keys(this.shapes).length;
     }
 
     expandPathPlaceholders(p: string): string {

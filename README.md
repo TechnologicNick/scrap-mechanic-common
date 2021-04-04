@@ -76,7 +76,7 @@ const { PathHelper, WorkshopModManager } = require("scrap-mechanic-common");
         PathHelper.updatePaths();
 
     // Loads all mods found in WorkshopModManager.getModsDirectories() and parses the shapesets
-    let { modCount, shapeCount } = WorkshopModManager.reloadMods();
+    let { modCount, shapeCount } = WorkshopModManager.reloadMods(true /* parse shapesets */);
     console.log(`Loaded ${modCount} mods with ${shapeCount} shapes`);
     
     // All loaded mods, including fake mods for Creative, Survival and Challenge mode

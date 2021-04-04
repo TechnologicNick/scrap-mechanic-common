@@ -16,7 +16,7 @@ export default class WorkshopModManager {
         ]
     }
 
-    static reloadMods(): { modCount: number, shapeCount: number } {
+    static reloadMods(parseShapesets = false): { modCount: number, shapeCount: number } {
         this.mods = {};
 
         let modsVanilla = [
@@ -45,7 +45,7 @@ export default class WorkshopModManager {
 
         for(let mod of modsVanilla) {
             try {
-                mod.parseShapesets();
+                if (parseShapesets) mod.parseShapesets();
             } catch(ex) {
                 console.warn(`Failed parsing shapesets of mod {name: ${mod.description.name}, localId: ${mod.description.localId}, dir: ${mod.dir}}`, ex);
                 continue;
@@ -71,7 +71,7 @@ export default class WorkshopModManager {
 
                     let mod = new WorkshopMod(path.join(modsDir, dir), desc);
                     try {
-                        mod.parseShapesets();
+                        if (parseShapesets) mod.parseShapesets();
                     } catch(ex) {
                         console.warn(`Failed parsing shapesets of mod {name: ${mod.description.name}, localId: ${mod.description.localId}, dir: ${mod.dir}}`, ex);
                         continue;
@@ -90,6 +90,10 @@ export default class WorkshopModManager {
         for (let mod of Object.values(this.mods)) shapeCount += Object.keys(mod.shapes).length;
         console.log(`Loaded ${modCount} mods with ${shapeCount} shapes`);
         return { modCount: modCount, shapeCount: shapeCount };
+    }
+
+    static parseShapesets(): number {
+        return Object.values(this.mods).map(mod => mod.parseShapesets()).reduce((a, b) => a + b);
     }
 
     static getModsWithShapeUuid(uuid: string): WorkshopMod[] {
