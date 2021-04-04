@@ -168,6 +168,11 @@ export default class PathHelper {
         return this.USER_DIR;
     }
 
+    // For when used in Electron (see https://github.com/ironSource/node-regedit#a-note-about-electron)
+    static setExternalVBSLocation(path: string): void {
+        regedit.setExternalVBSLocation(path);
+    }
+
 
 
     static updatePaths(): void {
