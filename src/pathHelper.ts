@@ -1,7 +1,7 @@
 import { Dialog } from "electron";
-import regedit from "regedit";
 import path from "path";
 import fs from "fs";
+import Registry from "winreg";
 
 const NO_INSTALL_DIR_MESSAGE = "PathHelper.INSTALLATION_DIR not initialised. Initialise it using PathHelper.findSMInstallDir() or PathHelper.findOrSelectSMInstallDir().";
 const NO_USER_DIR_MESSAGE = "PathHelper.USER_DIR not initialised. Initialise it using PathHelper.findUserDir()";
@@ -33,15 +33,22 @@ export default class PathHelper {
 
     static findSteamInstallation(): Promise<string> {
         return new Promise((resolve, reject) => {
-            regedit.list("HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam", (err: Error, result: Object) => { //TODO: Test this on 32bit windows
-                
-                if (err !== null) {
-                    console.error("Error getting the Steam install directory from the registry", err);
-                    reject(err.message);
-                    return;
+            new Registry({
+                hive: Registry.HKLM,
+                key: "\\SOFTWARE\\WOW6432Node\\Valve\\Steam"
+            }).values((err: Error | null, items: { name: string, value: string }[]) => {
+
+                const rej = (err: any) => {
+                    console.error("Error getting the Steam install directory from the registry:", err);
+                    reject(err);
                 }
 
-                this.STEAM_DIR = Object.values(result)[0].values.InstallPath.value;
+                if (err !== null) return rej(err);
+
+                this.STEAM_DIR = items.find(item => item.name === "InstallPath")?.value;
+
+                if (!this.STEAM_DIR) return rej("Key \"InstallPath\" not found in HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam");
+
                 this.WORKSHOP_DIR = path.join(<string>this.STEAM_DIR, "steamapps", "workshop", "content", "387990");
                 
                 resolve(<string>this.STEAM_DIR);
@@ -166,11 +173,6 @@ export default class PathHelper {
         }
 
         return this.USER_DIR;
-    }
-
-    // For when used in Electron (see https://github.com/ironSource/node-regedit#a-note-about-electron)
-    static setExternalVBSLocation(path: string): void {
-        regedit.setExternalVBSLocation(path);
     }
 
 
