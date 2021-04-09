@@ -37,7 +37,7 @@ export class WorkshopMod {
         this.description = description || JSON.parse(stripJsonComments(fs.readFileSync(path.join(this.dir, "description.json")).toString()));
         this.isFake = isFake;
         this.preview = preview
-            ?? (this.dir ? ["png", "jpg", "gif"].find(ext => fs.existsSync(path.join(this.dir, `preview.${ext}`))) : null)
+            ?? (this.dir ? ["png", "jpg", "gif"].map(ext => path.join(this.dir, `preview.${ext}`)).find(file => fs.existsSync(file)) : null)
             ?? PathHelper.expandPathPlaceholders("$GAME_DATA/ExampleMods/Blocks and Parts/preview.jpg");
         this.shapes = {};
 
