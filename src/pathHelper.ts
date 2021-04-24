@@ -7,22 +7,22 @@ const NO_INSTALL_DIR_MESSAGE = "PathHelper.INSTALLATION_DIR not initialised. Ini
 const NO_USER_DIR_MESSAGE = "PathHelper.USER_DIR not initialised. Initialise it using PathHelper.findUserDir()";
 
 export default class PathHelper {
-    static STEAM_DIR: string | undefined;
-    static WORKSHOP_DIR: string | undefined;
-    static INSTALLATION_DIR: string | undefined;
+    static STEAM_DIR: string;
+    static WORKSHOP_DIR: string;
+    static INSTALLATION_DIR: string;
 
-    static GAME_DATA: string | undefined;
-    static SURVIVAL_DATA: string | undefined;
-    static CHALLENGE_DATA: string | undefined;
+    static GAME_DATA: string;
+    static SURVIVAL_DATA: string;
+    static CHALLENGE_DATA: string;
 
-    static USER_DIR: string | undefined;
-    static USER_BLUEPRINTS_DIR: string | undefined;
-    static USER_CHALLENGES_DIR: string | undefined;
-    static USER_MODS_DIR: string | undefined;
-    static USER_PROGRESS_DIR: string | undefined;
-    static USER_SAVE_DIR: string | undefined;
-    static USER_TILES_DIR: string | undefined;
-    static USER_WORLDS_DIR: string | undefined;
+    static USER_DIR: string;
+    static USER_BLUEPRINTS_DIR: string;
+    static USER_CHALLENGES_DIR: string;
+    static USER_MODS_DIR: string;
+    static USER_PROGRESS_DIR: string;
+    static USER_SAVE_DIR: string;
+    static USER_TILES_DIR: string;
+    static USER_WORLDS_DIR: string;
 
 
     
@@ -45,21 +45,21 @@ export default class PathHelper {
 
                 if (err !== null) return rej(err);
 
-                this.STEAM_DIR = items.find(item => item.name === "InstallPath")?.value;
+                this.STEAM_DIR = <string> items.find(item => item.name === "InstallPath")?.value;
 
                 if (!this.STEAM_DIR) return rej("Key \"InstallPath\" not found in HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam");
 
-                this.WORKSHOP_DIR = path.join(<string>this.STEAM_DIR, "steamapps", "workshop", "content", "387990");
+                this.WORKSHOP_DIR = path.join(this.STEAM_DIR, "steamapps", "workshop", "content", "387990");
                 
-                resolve(<string>this.STEAM_DIR);
+                resolve(this.STEAM_DIR);
             });
         });
     }
 
     static getSteamLibraryFolders(): string[] {
-        let libFol = [ <string>this.STEAM_DIR ];
+        let libFol = [ this.STEAM_DIR ];
 
-        let vdf = fs.readFileSync(path.join(<string>this.STEAM_DIR, "steamapps", "libraryfolders.vdf")).toString();
+        let vdf = fs.readFileSync(path.join(this.STEAM_DIR, "steamapps", "libraryfolders.vdf")).toString();
         let matches = Array.from(vdf.matchAll(/^\t"\d+"\t\t"(.*?)"$/gm));
 
         // console.log(Array.from(matches));
@@ -180,16 +180,16 @@ export default class PathHelper {
     static updatePaths(): void {
         if (!this.INSTALLATION_DIR) throw NO_INSTALL_DIR_MESSAGE;
 
-        this.GAME_DATA = path.join(<string>this.INSTALLATION_DIR, "Data");
-        this.SURVIVAL_DATA = path.join(<string>this.INSTALLATION_DIR, "Survival");
-        this.CHALLENGE_DATA = path.join(<string>this.INSTALLATION_DIR, "ChallengeData");
+        this.GAME_DATA = path.join(this.INSTALLATION_DIR, "Data");
+        this.SURVIVAL_DATA = path.join(this.INSTALLATION_DIR, "Survival");
+        this.CHALLENGE_DATA = path.join(this.INSTALLATION_DIR, "ChallengeData");
     }
 
     static expandPathPlaceholders(p: string): string {
         if (!this.INSTALLATION_DIR) throw NO_INSTALL_DIR_MESSAGE;
 
-        return p.replace("$GAME_DATA", <string>this.GAME_DATA)
-                .replace("$SURVIVAL_DATA", <string>this.SURVIVAL_DATA)
-                .replace("$CHALLENGE_DATA", <string>this.CHALLENGE_DATA);
+        return p.replace("$GAME_DATA", this.GAME_DATA)
+                .replace("$SURVIVAL_DATA", this.SURVIVAL_DATA)
+                .replace("$CHALLENGE_DATA", this.CHALLENGE_DATA);
     }
 }

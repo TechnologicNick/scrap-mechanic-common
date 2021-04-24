@@ -20,21 +20,21 @@ export default class WorkshopModManager {
         this.mods = {};
 
         let modsVanilla = [
-            new WorkshopMod(<string>PathHelper.GAME_DATA, {
+            new WorkshopMod(PathHelper.GAME_DATA, {
                 description: "All blocks, parts and joints from vanilla creative mode",
                 localId: "creative",
                 name: "Vanilla - Creative mode",
                 type: "Blocks and Parts",
                 version: 0
             }, true),
-            new WorkshopMod(<string>PathHelper.SURVIVAL_DATA, {
+            new WorkshopMod(PathHelper.SURVIVAL_DATA, {
                 description: "All blocks, parts and joints from vanilla survival mode",
                 localId: "survival",
                 name: "Vanilla - Survival mode",
                 type: "Blocks and Parts",
                 version: 0
             }, true),
-            new WorkshopMod(<string>PathHelper.CHALLENGE_DATA, {
+            new WorkshopMod(PathHelper.CHALLENGE_DATA, {
                 description: "All blocks, parts and joints from vanilla challenge mode",
                 localId: "challenge",
                 name: "Vanilla - Challenge mode",
